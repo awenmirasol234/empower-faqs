@@ -6,8 +6,8 @@ import type {
   ContentStats,
   ContentStatus,
   ThumbnailMode,
-} from "../types/content.ts";
-import { extractYouTubeId, getYouTubeThumbnailUrl } from "../services/youtubeService.ts";
+} from "../types/content.js";
+import { extractYouTubeId, getYouTubeThumbnailUrl } from "../services/youtubeService.js";
 
 const VALID_TYPES = new Set<CardType>(["video", "faq"]);
 const VALID_STATUSES = new Set<ContentStatus>(["published", "draft", "hidden"]);

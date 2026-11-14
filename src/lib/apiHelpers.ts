@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { extractSessionIdFromRequest } from "./auth.ts";
-import { hasValidAdminSession } from "./redis.ts";
+import { extractSessionIdFromRequest } from "./auth.js";
+import { hasValidAdminSession } from "./redis.js";
 
 export function sendJson(
   res: ServerResponse,

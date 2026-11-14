@@ -1,11 +1,11 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { sendJson } from "../../src/lib/apiHelpers.ts";
+import { sendJson } from "../../src/lib/apiHelpers.js";
 import {
   buildClearSessionCookie,
   extractSessionIdFromRequest,
   setCookieHeader,
-} from "../../src/lib/auth.ts";
-import { deleteAdminSession } from "../../src/lib/redis.ts";
+} from "../../src/lib/auth.js";
+import { deleteAdminSession } from "../../src/lib/redis.js";
 
 export default async function handler(
   req: VercelRequest,

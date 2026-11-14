@@ -1,4 +1,4 @@
-import type { ContentCard, ContentDocument } from "../types/content.ts";
+import type { ContentCard, ContentDocument } from "../types/content.js";
 
 const NOW = "2026-11-14T00:00:00.000Z";
 

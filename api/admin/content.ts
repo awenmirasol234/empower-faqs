@@ -3,17 +3,17 @@ import {
   readJsonBody,
   requireAdminSession,
   sendJson,
-} from "../../src/lib/apiHelpers.ts";
+} from "../../src/lib/apiHelpers.js";
 import {
   ConflictError,
   getContentDocument,
   saveContentDocument,
-} from "../../src/lib/redis.ts";
+} from "../../src/lib/redis.js";
 import {
   computeContentStats,
   ValidationError,
-} from "../../src/lib/validation.ts";
-import type { ContentDocument } from "../../src/types/content.ts";
+} from "../../src/lib/validation.js";
+import type { ContentDocument } from "../../src/types/content.js";
 
 export default async function handler(
   req: VercelRequest,

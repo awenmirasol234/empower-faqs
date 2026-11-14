@@ -1,8 +1,8 @@
 import { Redis } from "@upstash/redis";
-import { INITIAL_CONTENT_DOCUMENT } from "../data/seedData.ts";
-import type { ContentDocument } from "../types/content.ts";
-import { SESSION_TTL_SECONDS } from "./auth.ts";
-import { validateContentDocument } from "./validation.ts";
+import { INITIAL_CONTENT_DOCUMENT } from "../data/seedData.js";
+import type { ContentDocument } from "../types/content.js";
+import { SESSION_TTL_SECONDS } from "./auth.js";
+import { validateContentDocument } from "./validation.js";
 
 export const CONTENT_KEY = "empower:content:v1";
 const SESSION_KEY_PREFIX = "empower:admin:session:";
@@ -29,13 +29,24 @@ interface MemoryEntry {
 const memoryStore = new Map<string, MemoryEntry>();
 let warnedAboutMemoryFallback = false;
 
+function readEnvValue(name: string): string | undefined {
+  const raw = process.env[name]?.trim();
+  if (!raw) return undefined;
+  if (
+    (raw.startsWith('"') && raw.endsWith('"')) ||
+    (raw.startsWith("'") && raw.endsWith("'"))
+  ) {
+    return raw.slice(1, -1).trim() || undefined;
+  }
+  return raw;
+}
+
 function getRedisClient(): Redis | null {
   const url =
-    process.env.UPSTASH_REDIS_REST_URL?.trim() ||
-    process.env.KV_REST_API_URL?.trim();
+    readEnvValue("UPSTASH_REDIS_REST_URL") || readEnvValue("KV_REST_API_URL");
   const token =
-    process.env.UPSTASH_REDIS_REST_TOKEN?.trim() ||
-    process.env.KV_REST_API_TOKEN?.trim();
+    readEnvValue("UPSTASH_REDIS_REST_TOKEN") ||
+    readEnvValue("KV_REST_API_TOKEN");
 
   if (url && token) {
     return new Redis({ url, token });

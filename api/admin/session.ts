@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { sendJson } from "../../src/lib/apiHelpers.ts";
-import { extractSessionIdFromRequest } from "../../src/lib/auth.ts";
-import { hasValidAdminSession } from "../../src/lib/redis.ts";
+import { sendJson } from "../../src/lib/apiHelpers.js";
+import { extractSessionIdFromRequest } from "../../src/lib/auth.js";
+import { hasValidAdminSession } from "../../src/lib/redis.js";
 
 export default async function handler(
   req: VercelRequest,

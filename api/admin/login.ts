@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { readJsonBody, sendJson } from "../../src/lib/apiHelpers.ts";
+import { readJsonBody, sendJson } from "../../src/lib/apiHelpers.js";
 import {
   buildSessionCookie,
   generateSessionId,
@@ -7,13 +7,13 @@ import {
   setCookieHeader,
   signSessionId,
   verifyAdminPassword,
-} from "../../src/lib/auth.ts";
+} from "../../src/lib/auth.js";
 import {
   checkLoginRateLimit,
   clearLoginRateLimit,
   createAdminSession,
   recordFailedLoginAttempt,
-} from "../../src/lib/redis.ts";
+} from "../../src/lib/redis.js";
 
 export default async function handler(
   req: VercelRequest,

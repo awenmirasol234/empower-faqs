@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { sendJson } from "../src/lib/apiHelpers.ts";
-import { getContentDocument } from "../src/lib/redis.ts";
+import { sendJson } from "../src/lib/apiHelpers.js";
+import { getContentDocument } from "../src/lib/redis.js";
 
 export default async function handler(
   req: VercelRequest,
