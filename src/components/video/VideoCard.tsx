@@ -35,7 +35,7 @@ export function VideoCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full flex-col overflow-hidden rounded-[10px] border border-[#e8eaec] bg-[#ffffff] text-left transition-colors hover:border-[#cdced1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
+      className="group flex w-full flex-col overflow-hidden rounded-[10px] border border-[#e8eaec] bg-[#ffffff] text-left transition-colors hover:border-[#2d5be3]/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
     >
       <div className="relative aspect-video w-full overflow-hidden border-b border-[#f0f1f2] bg-[#f4f6f8]">
         {thumbSrc ? (
@@ -76,7 +76,7 @@ export function VideoCard({
 
       <div className="flex flex-1 flex-col gap-2 p-3.5">
         {categoryName && (
-          <span className="text-[11px] font-medium uppercase tracking-[0.04em] text-[#2d5be3]">
+          <span className="w-fit rounded-[5px] bg-[#eef3fe] px-2 py-0.5 text-[11px] font-medium text-[#2d5be3]">
             {categoryName}
           </span>
         )}

@@ -27,9 +27,9 @@ export function FaqCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full flex-col overflow-hidden rounded-[10px] border border-[#e8eaec] bg-[#ffffff] text-left transition-colors hover:border-[#cdced1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
+      className="group flex w-full flex-col overflow-hidden rounded-[10px] border border-[#e8eaec] bg-[#ffffff] text-left transition-colors hover:border-[#2d5be3]/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
     >
-      <div className="relative flex aspect-video w-full flex-col justify-between border-b border-[#e8eaec] bg-[#f4f6f8] p-3.5">
+      <div className="relative flex aspect-video w-full flex-col justify-between border-b border-[#e8eaec] bg-[#f8fafc] p-3.5">
         <div className="flex items-center justify-between gap-2">
           <span className="inline-flex items-center gap-1 rounded-[5px] border border-[#e8eaec] bg-[#ffffff] px-2 py-0.5 text-[11px] font-medium text-[#131416]">
             <HelpCircle className="h-3 w-3 text-[#2d5be3]" aria-hidden="true" />
@@ -56,7 +56,7 @@ export function FaqCard({
 
       <div className="flex flex-1 flex-col gap-2 p-3.5">
         {categoryName && (
-          <span className="text-[11px] font-medium uppercase tracking-[0.04em] text-[#2d5be3]">
+          <span className="w-fit rounded-[5px] bg-[#eef3fe] px-2 py-0.5 text-[11px] font-medium text-[#2d5be3]">
             {categoryName}
           </span>
         )}

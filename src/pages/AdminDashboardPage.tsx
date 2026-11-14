@@ -230,16 +230,16 @@ export function AdminDashboardPage() {
   const categories = doc?.categories ?? [];
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-[#f4f6f9]">
-      <header className="flex h-12 shrink-0 items-center justify-between gap-3 bg-[#f4f6f9] px-4 sm:px-6">
+    <div className="flex min-h-[100dvh] flex-col bg-[#f8fafc]">
+      <header className="flex h-12 shrink-0 items-center justify-between gap-3 bg-[#f8fafc] px-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-2.5">
-          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] bg-[#131416] text-[11px] font-semibold text-white">
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] bg-[#2d5be3] text-[11px] font-semibold text-white">
             EM
           </div>
           <span className="truncate text-[14px] font-medium tracking-tight text-[#131416]">
             Admin CMS
           </span>
-          <span className="num rounded-[5px] border border-[#e8eaec] bg-[#ffffff] px-2 py-0.5 text-[11px] text-[#5d5f60]">
+          <span className="num rounded-[5px] border border-[#dbe5fc] bg-[#eef3fe] px-2 py-0.5 text-[11px] font-medium text-[#2d5be3]">
             {stats.totalCards} cards
           </span>
         </div>
@@ -302,7 +302,7 @@ export function AdminDashboardPage() {
                 setFormInitialType("video");
                 setFormOpen(true);
               }}
-              className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-[6px] bg-[#131416] px-3.5 text-[13px] font-medium text-white hover:bg-[#2a2c30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] sm:flex-none"
+              className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-[6px] bg-[#2d5be3] px-3.5 text-[13px] font-medium text-white hover:bg-[#244ac2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] sm:flex-none"
             >
               <span>+</span> Add YouTube Video
             </button>
@@ -313,7 +313,7 @@ export function AdminDashboardPage() {
                 setFormInitialType("faq");
                 setFormOpen(true);
               }}
-              className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-3.5 text-[13px] font-medium text-[#131416] hover:border-[#cdced1] hover:bg-[#f4f6f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] sm:flex-none"
+              className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-[6px] border border-[#2d5be3] bg-[#ffffff] px-3.5 text-[13px] font-medium text-[#2d5be3] hover:bg-[#eef3fe] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] sm:flex-none"
             >
               <span>+</span> Add FAQ Card
             </button>

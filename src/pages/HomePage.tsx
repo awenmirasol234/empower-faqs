@@ -228,7 +228,7 @@ export function HomePage() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-[#f4f6f9]">
+    <div className="flex min-h-[100dvh] flex-col bg-[#f8fafc]">
       <Header
         site={site}
         searchQuery={query}
@@ -263,7 +263,7 @@ export function HomePage() {
               aria-modal="true"
               aria-label="Module navigation"
               data-ui="drawer"
-              className="flex h-full w-[264px] flex-col border-r border-[#e8eaec] bg-[#f4f6f9] p-3"
+              className="flex h-full w-[264px] flex-col border-r border-[#e8eaec] bg-[#f8fafc] p-3"
             >
               <div className="mb-2 flex items-center justify-between px-2 py-1">
                 <span className="text-[13px] font-medium text-[#131416]">
@@ -301,7 +301,7 @@ export function HomePage() {
                 <h1 className="truncate text-[20px] font-medium tracking-tight text-[#131416]">
                   {activeCategoryName}
                 </h1>
-                <span className="num rounded-[5px] border border-[#e8eaec] bg-[#f4f6f8] px-2 py-0.5 text-[11px] font-medium text-[#5d5f60]">
+                <span className="num rounded-[5px] border border-[#dbe5fc] bg-[#eef3fe] px-2 py-0.5 text-[11px] font-medium text-[#2d5be3]">
                   {sortedCards.length}{" "}
                   {sortedCards.length === 1 ? "guide" : "guides"}
                 </span>
@@ -329,8 +329,8 @@ export function HomePage() {
                     onClick={() => setSortBy(tab.key)}
                     className={`whitespace-nowrap border-b-2 pb-3 text-[13px] transition-colors focus-visible:outline-none ${
                       active
-                        ? "border-[#131416] font-medium text-[#131416]"
-                        : "border-transparent font-normal text-[#5d5f60] hover:text-[#131416]"
+                        ? "border-[#2d5be3] font-medium text-[#2d5be3]"
+                        : "border-transparent font-normal text-[#5d5f60] hover:text-[#2d5be3]"
                     }`}
                   >
                     {tab.label}

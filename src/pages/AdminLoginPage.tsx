@@ -31,11 +31,11 @@ export function AdminLoginPage() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-[#f4f6f9]">
-      <header className="flex h-12 shrink-0 items-center justify-between bg-[#f4f6f9] px-4 sm:px-6">
+    <div className="flex min-h-[100dvh] flex-col bg-[#f8fafc]">
+      <header className="flex h-12 shrink-0 items-center justify-between bg-[#f8fafc] px-4 sm:px-6">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 rounded-[6px] px-2 py-1 text-[13px] font-medium text-[#5d5f60] hover:bg-[#ebedee] hover:text-[#131416]"
+          className="inline-flex items-center gap-1.5 rounded-[6px] px-2 py-1 text-[13px] font-medium text-[#2d5be3] hover:bg-[#eef3fe]"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
           Back to library
@@ -48,7 +48,7 @@ export function AdminLoginPage() {
           className="w-full rounded-[16px] border border-[#e8eaec] bg-[#ffffff] p-6 sm:p-8"
         >
           <div className="mb-5 flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-[#131416] text-[11px] font-semibold text-white">
+            <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-[#2d5be3] text-[11px] font-semibold text-white">
               EM
             </div>
             <h1 className="text-[18px] font-semibold tracking-tight text-[#131416]">
@@ -85,7 +85,7 @@ export function AdminLoginPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-5 inline-flex h-9 w-full items-center justify-center rounded-[6px] bg-[#131416] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[#2a2c30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] disabled:opacity-50"
+            className="mt-5 inline-flex h-9 w-full items-center justify-center rounded-[6px] bg-[#2d5be3] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[#244ac2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] disabled:opacity-50"
           >
             {submitting ? "Checking..." : "Sign In"}
           </button>

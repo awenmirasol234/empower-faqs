@@ -37,12 +37,16 @@ export function CategoryFilter({
             aria-pressed={isActive}
             className={
               isActive
-                ? "flex w-full items-center justify-between gap-2 rounded-[6px] bg-[#ebedee] px-2.5 py-1.5 text-left text-[13px] font-medium text-[#131416] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#cdced1]"
-                : "flex w-full items-center justify-between gap-2 rounded-[6px] px-2.5 py-1.5 text-left text-[13px] font-normal text-[#5d5f60] transition-colors hover:bg-[#ebedee]/60 hover:text-[#131416] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#cdced1]"
+                ? "flex w-full items-center justify-between gap-2 rounded-[6px] bg-[#2d5be3] px-2.5 py-1.5 text-left text-[13px] font-medium text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
+                : "flex w-full items-center justify-between gap-2 rounded-[6px] px-2.5 py-1.5 text-left text-[13px] font-normal text-[#5d5f60] transition-colors hover:bg-[#eef3fe] hover:text-[#2d5be3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
             }
           >
             <span className="truncate">{cat.name}</span>
-            <span className="num shrink-0 text-[11px] text-[#5d5f60]">
+            <span
+              className={`num shrink-0 text-[11px] ${
+                isActive ? "text-white/90" : "text-[#5d5f60]"
+              }`}
+            >
               {count}
             </span>
           </button>
