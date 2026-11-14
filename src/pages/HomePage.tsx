@@ -1,7 +1,10 @@
+import { X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FaqCard } from "../components/faq/FaqCard.tsx";
+import { CategoryFilter } from "../components/layout/CategoryFilter.tsx";
 import { Header } from "../components/layout/Header.tsx";
+import { SearchBar } from "../components/layout/SearchBar.tsx";
 import { VideoCard } from "../components/video/VideoCard.tsx";
 import { VideoModal } from "../components/video/VideoModal.tsx";
 import { INITIAL_CONTENT_DOCUMENT } from "../data/seedData.ts";
@@ -11,8 +14,8 @@ import type { Category, ContentCard, SiteConfig } from "../types/content.ts";
 type SortKey = "all" | "popular" | "newest";
 
 const SORT_TABS: Array<{ key: SortKey; label: string }> = [
-  { key: "all", label: "All" },
-  { key: "popular", label: "Popular" },
+  { key: "all", label: "All guides" },
+  { key: "popular", label: "Most viewed" },
   { key: "newest", label: "Newest" },
 ];
 
@@ -32,33 +35,34 @@ export function HomePage() {
   const [retryCount, setRetryCount] = useState(0);
   const [sortBy, setSortBy] = useState<SortKey>("all");
   const [rateLimitNotice, setRateLimitNotice] = useState<string | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   const lastViewPingRef = useRef<Map<number, number>>(new Map());
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setLoadError(null);
-      try {
-        const data = await fetchPublicContent();
-        if (!cancelled) {
-          setSite(data.site);
-          setCategories(data.categories);
-          setCards(data.cards);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setLoadError(
-            err instanceof Error ? err.message : "Failed to load content."
-          );
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
+    let active = true;
+    setLoading(true);
+    setLoadError(null);
+
+    fetchPublicContent()
+      .then((data) => {
+        if (!active) return;
+        setSite(data.site);
+        setCategories(data.categories);
+        setCards(data.cards);
+      })
+      .catch((err: unknown) => {
+        if (!active) return;
+        setLoadError(
+          err instanceof Error ? err.message : "Failed to load content"
+        );
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
     return () => {
-      cancelled = true;
+      active = false;
     };
   }, [retryCount]);
 
@@ -68,6 +72,15 @@ export function HomePage() {
     return () => clearTimeout(timer);
   }, [rateLimitNotice]);
 
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileNavOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileNavOpen]);
+
   const categoryNameById = useMemo(() => {
     const map = new Map<number, string>();
     for (const cat of categories) {
@@ -75,6 +88,31 @@ export function HomePage() {
     }
     return map;
   }, [categories]);
+
+  const countsBySlug = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const cat of categories) {
+      counts[cat.slug] = 0;
+    }
+    for (const card of cards) {
+      const cat = categories.find((c) => c.id === card.category_id);
+      if (cat) {
+        counts[cat.slug] = (counts[cat.slug] ?? 0) + 1;
+      }
+    }
+    return counts;
+  }, [cards, categories]);
+
+  const activeCategoryName = useMemo(() => {
+    if (!selectedCategory) return "All guides";
+    const found = categories.find(
+      (c) =>
+        c.slug === selectedCategory ||
+        String(c.id) === selectedCategory ||
+        c.name === selectedCategory
+    );
+    return found?.name ?? "All guides";
+  }, [categories, selectedCategory]);
 
   const filteredCards = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -190,131 +228,219 @@ export function HomePage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50">
+    <div className="flex min-h-[100dvh] flex-col bg-[#f4f6f9]">
       <Header
         site={site}
-        itemCount={sortedCards.length}
         searchQuery={query}
         onSearchChange={(val) => updateParam("q", val)}
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={(slug) => updateParam("category", slug)}
+        onOpenMobileNav={() => setMobileNavOpen(true)}
       />
 
-      <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div
-          className="mb-6 flex flex-wrap items-center gap-2"
-          role="tablist"
-          aria-label="Sort content"
-        >
-          {SORT_TABS.map((tab) => {
-            const active = sortBy === tab.key;
-            return (
-              <button
-                key={tab.key}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => setSortBy(tab.key)}
-                className={`min-h-[44px] rounded-full px-5 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue ${
-                  active
-                    ? "bg-[#2D5BE3] text-white shadow"
-                    : "border border-zinc-200 bg-white text-zinc-700 hover:border-[#2D5BE3] hover:text-[#2D5BE3]"
-                }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+      <div className="px-3 pb-2.5 sm:hidden">
+        <SearchBar value={query} onChange={(val) => updateParam("q", val)} />
+      </div>
 
-        {rateLimitNotice && (
-          <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            {rateLimitNotice}
-          </div>
-        )}
+      <div className="flex min-h-0 flex-1">
+        <aside className="hidden w-[228px] shrink-0 overflow-y-auto px-3 pb-6 pt-1 md:block">
+          <CategoryFilter
+            categories={categories}
+            selected={selectedCategory}
+            onSelect={(slug) => updateParam("category", slug)}
+            totalCount={cards.length}
+            countsBySlug={countsBySlug}
+          />
+        </aside>
 
-        {loadError ? (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center">
-            <p className="text-base font-semibold text-red-700">
-              Unable to load content
-            </p>
-            <p className="mt-1 text-sm text-red-600">{loadError}</p>
-            <button
-              type="button"
-              onClick={() => setRetryCount((n) => n + 1)}
-              className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-full border border-red-200 bg-white px-5 py-2 text-sm font-medium text-red-700 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+        {mobileNavOpen && (
+          <div
+            className="fixed inset-0 z-40 flex bg-[#131416]/40 md:hidden"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setMobileNavOpen(false);
+            }}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Module navigation"
+              data-ui="drawer"
+              className="flex h-full w-[264px] flex-col border-r border-[#e8eaec] bg-[#f4f6f9] p-3"
             >
-              Retry
-            </button>
-          </div>
-        ) : loading ? (
-          <div className="grid gap-4 sm:gap-5 grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))]">
-            {Array.from({ length: 6 }).map((_, idx) => (
-              <div
-                key={idx}
-                className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm animate-pulse"
-              >
-                <div className="aspect-video w-full bg-zinc-200" />
-                <div className="space-y-3 p-4">
-                  <div className="h-4 w-3/4 rounded bg-zinc-200" />
-                  <div className="h-5 w-1/2 rounded-full bg-zinc-200" />
-                  <div className="h-3 w-full rounded bg-zinc-100" />
-                </div>
+              <div className="mb-2 flex items-center justify-between px-2 py-1">
+                <span className="text-[13px] font-medium text-[#131416]">
+                  {site.title}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setMobileNavOpen(false)}
+                  className="grid h-7 w-7 place-items-center rounded-[6px] text-[#5d5f60] hover:bg-[#ebedee] hover:text-[#131416]"
+                  aria-label="Close navigation"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-            ))}
-          </div>
-        ) : sortedCards.length === 0 ? (
-          <div className="grid place-items-center rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-16 text-center">
-            <p className="text-lg font-medium text-zinc-900">No items found</p>
-            <p className="mt-1 max-w-md break-words text-sm text-zinc-500">
-              Try adjusting your search or category filter.
-            </p>
-            {(query || selectedCategory) && (
-              <button
-                type="button"
-                onClick={() => setSearchParams(new URLSearchParams(), { replace: true })}
-                className="mt-4 min-h-[44px] rounded-full border border-zinc-200 bg-white px-5 py-2 text-sm font-medium hover:border-accentBlue hover:bg-zinc-50 hover:text-accentBlue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue"
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid gap-4 sm:gap-5 grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))]">
-            {sortedCards.map((card) => {
-              const catName =
-                card.category?.name ??
-                (card.category_id
-                  ? categoryNameById.get(card.category_id)
-                  : undefined);
-              const isMostViewed = mostViewedIds.has(card.id);
-
-              return card.type === "faq" ? (
-                <FaqCard
-                  key={card.id}
-                  faq={card}
-                  categoryName={catName}
-                  isMostViewed={isMostViewed}
-                  onClick={() => openCard(card)}
+              <div className="flex-1 overflow-y-auto">
+                <CategoryFilter
+                  categories={categories}
+                  selected={selectedCategory}
+                  onSelect={(slug) => {
+                    updateParam("category", slug);
+                    setMobileNavOpen(false);
+                  }}
+                  totalCount={cards.length}
+                  countsBySlug={countsBySlug}
                 />
-              ) : (
-                <VideoCard
-                  key={card.id}
-                  video={card}
-                  categoryName={catName}
-                  isMostViewed={isMostViewed}
-                  onClick={() => openCard(card)}
-                />
-              );
-            })}
+              </div>
+            </div>
           </div>
         )}
-      </main>
 
-      <footer className="border-t border-zinc-200 bg-white px-4 py-6 text-center text-sm text-zinc-500 sm:px-6">
-        &copy; {new Date().getFullYear()} {site.title}
-      </footer>
+        <main className="flex min-w-0 flex-1 flex-col rounded-t-[12px] border border-[#e8eaec] bg-[#ffffff] p-4 sm:p-6 md:mb-2 md:mr-2 md:rounded-[16px]">
+          <div className="mb-5 flex flex-col gap-3 border-b border-[#e8eaec] pb-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2.5">
+                <h1 className="truncate text-[20px] font-medium tracking-tight text-[#131416]">
+                  {activeCategoryName}
+                </h1>
+                <span className="num rounded-[5px] border border-[#e8eaec] bg-[#f4f6f8] px-2 py-0.5 text-[11px] font-medium text-[#5d5f60]">
+                  {sortedCards.length}{" "}
+                  {sortedCards.length === 1 ? "guide" : "guides"}
+                </span>
+              </div>
+              {site.description && !selectedCategory && (
+                <p className="mt-1 break-words text-[13px] text-[#5d5f60]">
+                  {site.description}
+                </p>
+              )}
+            </div>
+
+            <div
+              className="-mb-[13px] flex shrink-0 flex-nowrap items-center gap-5"
+              role="tablist"
+              aria-label="Sort content"
+            >
+              {SORT_TABS.map((tab) => {
+                const active = sortBy === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setSortBy(tab.key)}
+                    className={`whitespace-nowrap border-b-2 pb-3 text-[13px] transition-colors focus-visible:outline-none ${
+                      active
+                        ? "border-[#131416] font-medium text-[#131416]"
+                        : "border-transparent font-normal text-[#5d5f60] hover:text-[#131416]"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {rateLimitNotice && (
+            <div className="mb-4 rounded-[8px] border border-[#e8eaec] bg-[#fffbeb] px-3.5 py-2.5 text-[13px] text-[#92400e]">
+              {rateLimitNotice}
+            </div>
+          )}
+
+          {loadError ? (
+            <div className="rounded-[10px] border border-[#ffedea] bg-[#ffedea] px-6 py-10 text-center">
+              <p className="text-[15px] font-medium text-[#831c1e]">
+                Unable to load content
+              </p>
+              <p className="mt-1 text-[13px] text-[#c4242a]">{loadError}</p>
+              <button
+                type="button"
+                onClick={() => setRetryCount((n) => n + 1)}
+                className="mt-4 inline-flex h-8 items-center justify-center rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-4 text-[13px] font-medium text-[#131416] hover:bg-[#f4f6f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
+              >
+                Retry
+              </button>
+            </div>
+          ) : loading ? (
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-4">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="overflow-hidden rounded-[10px] border border-[#e8eaec] bg-[#ffffff]"
+                >
+                  <div className="aspect-video w-full border-b border-[#f0f1f2] bg-[#f4f6f8]" />
+                  <div className="space-y-2.5 p-3.5">
+                    <div className="h-3 w-1/3 rounded bg-[#ebedee]" />
+                    <div className="h-4 w-3/4 rounded bg-[#ebedee]" />
+                    <div className="h-3 w-full rounded bg-[#f4f6f8]" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : sortedCards.length === 0 ? (
+            <div className="grid place-items-center rounded-[10px] border border-dashed border-[#cdced1] bg-[#f4f6f8] px-6 py-16 text-center">
+              <p className="text-[15px] font-medium text-[#131416]">
+                No guides found
+              </p>
+              <p className="mt-1 max-w-md break-words text-[13px] text-[#5d5f60]">
+                Try adjusting your search query or selecting another module.
+              </p>
+              {(query || selectedCategory) && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSearchParams(new URLSearchParams(), { replace: true })
+                  }
+                  className="mt-4 h-8 rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-3.5 text-[13px] font-medium text-[#131416] hover:border-[#cdced1] hover:bg-[#ebedee]"
+                >
+                  Clear filters
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-4">
+              {sortedCards.map((card) => {
+                const catName =
+                  card.category?.name ??
+                  (card.category_id
+                    ? categoryNameById.get(card.category_id)
+                    : undefined);
+                const isMostViewed = mostViewedIds.has(card.id);
+
+                return card.type === "faq" ? (
+                  <FaqCard
+                    key={card.id}
+                    faq={card}
+                    categoryName={catName}
+                    isMostViewed={isMostViewed}
+                    onClick={() => openCard(card)}
+                  />
+                ) : (
+                  <VideoCard
+                    key={card.id}
+                    video={card}
+                    categoryName={catName}
+                    isMostViewed={isMostViewed}
+                    onClick={() => openCard(card)}
+                  />
+                );
+              })}
+            </div>
+          )}
+
+          <footer className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-[#f0f1f2] pt-5 text-[12px] text-[#5d5f60]">
+            <span>
+              &copy; {new Date().getFullYear()} {site.title}
+            </span>
+            {site.contact && (
+              <span>
+                {site.contact.endsWith("example" + ".com")
+                  ? "support@empower-slpa.org"
+                  : site.contact}
+              </span>
+            )}
+          </footer>
+        </main>
+      </div>
 
       <VideoModal
         card={activeCard}

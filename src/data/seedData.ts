@@ -355,9 +355,9 @@ export const INITIAL_CONTENT_DOCUMENT: ContentDocument = {
   site: {
     title: "Video Library",
     description:
-      "Browse tutorials, requirements, and orientation videos — searchable and filterable.",
+      "Browse tutorials, requirements, and orientation videos, searchable and filterable.",
     logo: "/images/logo.png",
-    contact: "contact@example.com",
+    contact: "support@empower-slpa.org",
   },
   categories: [
     { id: 1, name: "Authentication & Security", slug: "authentication-security", display_order: 0 },

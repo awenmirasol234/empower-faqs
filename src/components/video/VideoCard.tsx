@@ -27,7 +27,7 @@ export function VideoCard({
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean)
-        .slice(0, 4)
+        .slice(0, 3)
     : [];
   const views = typeof video.views === "number" ? video.views : 0;
 
@@ -35,15 +35,15 @@ export function VideoCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white text-left shadow-sm transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue min-h-[44px]"
+      className="group flex w-full flex-col overflow-hidden rounded-[10px] border border-[#e8eaec] bg-[#ffffff] text-left transition-colors hover:border-[#cdced1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
     >
-      <div className="relative aspect-video w-full overflow-hidden bg-zinc-100">
+      <div className="relative aspect-video w-full overflow-hidden border-b border-[#f0f1f2] bg-[#f4f6f8]">
         {thumbSrc ? (
           <img
             src={thumbSrc}
             alt=""
             loading="lazy"
-            className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+            className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
             onError={(e) => {
               const img = e.currentTarget;
               if (fallbackThumb && img.src !== fallbackThumb) {
@@ -56,59 +56,65 @@ export function VideoCard({
         ) : null}
 
         <span className="absolute inset-0 grid place-items-center">
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-black/60 text-white backdrop-blur-sm transition group-hover:bg-black/70">
-            <Play className="h-[18px] w-[18px] fill-current ml-0.5" aria-hidden="true" />
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-[#131416]/80 text-white transition-colors group-hover:bg-[#131416]">
+            <Play className="ml-0.5 h-4 w-4 fill-current" aria-hidden="true" />
           </span>
         </span>
 
         {isMostViewed && (
-          <span className="absolute left-2 top-2 rounded-full bg-[#2D5BE3] px-2.5 py-1 text-xs font-semibold text-white shadow">
-            Most Viewed
+          <span className="absolute left-2 top-2 rounded-[5px] bg-[#2d5be3] px-2 py-0.5 text-[11px] font-medium text-white">
+            Most viewed
           </span>
         )}
 
-        <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 text-xs font-medium text-white backdrop-blur">
-          <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-          {views}
-        </span>
+        {video.duration && (
+          <span className="num absolute bottom-2 right-2 rounded-[5px] bg-[#131416]/85 px-1.5 py-0.5 font-mono text-[11px] font-medium text-white">
+            {video.duration}
+          </span>
+        )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-3 sm:p-4">
-        <h3 className="break-words text-sm font-semibold leading-snug text-zinc-900 sm:text-[15px] line-clamp-2">
-          {video.title}
-        </h3>
-
+      <div className="flex flex-1 flex-col gap-2 p-3.5">
         {categoryName && (
-          <span className="w-fit rounded-full bg-accentBlue px-2.5 py-1 text-xs font-medium text-white">
+          <span className="text-[11px] font-medium uppercase tracking-[0.04em] text-[#2d5be3]">
             {categoryName}
           </span>
         )}
 
+        <h3 className="line-clamp-2 break-words text-[14px] font-medium leading-[1.35] text-[#131416]">
+          {video.title}
+        </h3>
+
         {video.description && (
-          <p className="break-words text-sm leading-relaxed text-zinc-600 line-clamp-2">
+          <p className="line-clamp-2 break-words text-[13px] leading-[1.45] text-[#5d5f60]">
             {video.description}
           </p>
         )}
 
-        <div className="mt-auto flex items-center justify-between pt-1">
-          <span className="inline-flex items-center gap-1 text-xs text-zinc-500">
-            <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-            {views} {views === 1 ? "view" : "views"}
-          </span>
-        </div>
-
         {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1 pt-0.5">
             {tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-zinc-100 px-2 py-1 text-xs text-zinc-600 break-words"
+                className="rounded-[5px] border border-[#e8eaec] bg-[#f4f6f8] px-1.5 py-0.5 text-[11px] text-[#5d5f60]"
               >
                 #{tag}
               </span>
             ))}
           </div>
         )}
+
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-[#f0f1f2] pt-2.5 text-[12px] text-[#5d5f60]">
+          <span className="num inline-flex items-center gap-1">
+            <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+            {views} {views === 1 ? "view" : "views"}
+          </span>
+          {video.youtube_id && (
+            <span className="font-mono text-[11px] text-[#5d5f60]">
+              {video.youtube_id}
+            </span>
+          )}
+        </div>
       </div>
     </button>
   );

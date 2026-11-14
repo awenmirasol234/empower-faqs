@@ -1,67 +1,53 @@
-import { ChevronDown } from "lucide-react";
 import type { Category } from "../../types/content.ts";
 
 interface CategoryFilterProps {
   categories: Category[];
   selected: string;
   onSelect: (slug: string) => void;
+  totalCount: number;
+  countsBySlug: Record<string, number>;
 }
 
 export function CategoryFilter({
   categories,
   selected,
   onSelect,
+  totalCount,
+  countsBySlug,
 }: CategoryFilterProps) {
-  const options = [{ id: 0, name: "All", slug: "", display_order: -1 }, ...categories];
+  const options = [
+    { id: 0, name: "All guides", slug: "", display_order: -1 },
+    ...categories,
+  ];
 
   return (
-    <>
-      {/* Mobile dropdown */}
-      <div className="md:hidden">
-        <label htmlFor="category-filter-select" className="sr-only">
-          Filter by category
-        </label>
-        <div className="relative">
-          <select
-            id="category-filter-select"
-            aria-label="Filter by category"
-            value={selected}
-            onChange={(e) => onSelect(e.target.value)}
-            className="w-full appearance-none rounded-xl border border-zinc-200 bg-white px-4 py-2.5 pr-12 text-sm leading-5 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accentBlue focus:border-accentBlue"
-          >
-            {options.map((cat) => (
-              <option key={cat.slug || "all"} value={cat.slug}>
-                {cat.slug === "" ? "All Categories" : cat.name}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500">
-            <ChevronDown className="h-5 w-5" aria-hidden="true" />
-          </div>
-        </div>
+    <nav aria-label="Module index" className="flex flex-col gap-0.5">
+      <div className="px-2.5 pb-1.5 pt-1 text-[11px] font-medium uppercase tracking-[0.06em] text-[#5d5f60]">
+        Modules
       </div>
+      {options.map((cat) => {
+        const isActive = selected === cat.slug;
+        const count = cat.slug === "" ? totalCount : countsBySlug[cat.slug] ?? 0;
 
-      {/* Desktop category pills */}
-      <div className="hidden md:flex flex-wrap gap-2">
-        {options.map((cat) => {
-          const isActive = selected === cat.slug;
-          return (
-            <button
-              key={cat.slug || "all"}
-              type="button"
-              onClick={() => onSelect(cat.slug)}
-              className={
-                isActive
-                  ? "rounded-full bg-accentBlue px-4 py-2 text-sm font-medium text-white min-h-[44px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue"
-                  : "rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 min-h-[44px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue"
-              }
-              aria-pressed={isActive}
-            >
-              {cat.name}
-            </button>
-          );
-        })}
-      </div>
-    </>
+        return (
+          <button
+            key={cat.slug || "all"}
+            type="button"
+            onClick={() => onSelect(cat.slug)}
+            aria-pressed={isActive}
+            className={
+              isActive
+                ? "flex w-full items-center justify-between gap-2 rounded-[6px] bg-[#ebedee] px-2.5 py-1.5 text-left text-[13px] font-medium text-[#131416] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#cdced1]"
+                : "flex w-full items-center justify-between gap-2 rounded-[6px] px-2.5 py-1.5 text-left text-[13px] font-normal text-[#5d5f60] transition-colors hover:bg-[#ebedee]/60 hover:text-[#131416] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#cdced1]"
+            }
+          >
+            <span className="truncate">{cat.name}</span>
+            <span className="num shrink-0 text-[11px] text-[#5d5f60]">
+              {count}
+            </span>
+          </button>
+        );
+      })}
+    </nav>
   );
 }

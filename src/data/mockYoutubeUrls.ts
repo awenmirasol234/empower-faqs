@@ -38,7 +38,7 @@ export const MOCK_YOUTUBE_URLS: MockYouTubePreset[] = [
   },
   {
     label: "Invalid URL",
-    url: "https://example.com/not-a-youtube-video",
+    url: "https://empower-slpa.org/not-a-youtube-video",
     sampleTitle: "",
     expectedId: null,
   },

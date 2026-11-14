@@ -6,21 +6,22 @@ interface StatsCardsProps {
 
 export function StatsCards({ stats }: StatsCardsProps) {
   const items = [
-    { label: "Total Cards", value: stats.totalCards, tone: "text-zinc-900" },
-    { label: "Published Cards", value: stats.publishedCards, tone: "text-green-700" },
-    { label: "Draft Cards", value: stats.draftCards, tone: "text-amber-700" },
-    { label: "Total Categories", value: stats.totalCategories, tone: "text-accentBlue" },
+    { label: "Total guides", value: stats.totalCards, tone: "text-[#131416]" },
+    { label: "Published", value: stats.publishedCards, tone: "text-[#1e7b4f]" },
+    { label: "Drafts", value: stats.draftCards, tone: "text-[#92400e]" },
+    { label: "Modules", value: stats.totalCategories, tone: "text-[#2d5be3]" },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+    <div className="grid grid-cols-2 divide-x divide-y divide-[#e8eaec] overflow-hidden rounded-[10px] border border-[#e8eaec] bg-[#ffffff] sm:grid-cols-4 sm:divide-y-0">
       {items.map((item) => (
-        <div
-          key={item.label}
-          className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
-        >
-          <p className="text-xs font-medium text-zinc-500">{item.label}</p>
-          <p className={`mt-1 text-2xl font-bold tracking-tight ${item.tone}`}>
+        <div key={item.label} className="px-4 py-3.5">
+          <p className="text-[11px] font-medium uppercase tracking-[0.04em] text-[#5d5f60]">
+            {item.label}
+          </p>
+          <p
+            className={`num mt-1 text-[28px] font-normal leading-none tracking-tight ${item.tone}`}
+          >
             {item.value}
           </p>
         </div>

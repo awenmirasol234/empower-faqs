@@ -1,53 +1,52 @@
-import type { Category, SiteConfig } from "../../types/content.ts";
-import { CategoryFilter } from "./CategoryFilter.tsx";
+import { Menu } from "lucide-react";
+import { Link } from "react-router-dom";
+import type { SiteConfig } from "../../types/content.ts";
 import { SearchBar } from "./SearchBar.tsx";
 
 interface HeaderProps {
   site: SiteConfig;
-  itemCount: number;
   searchQuery: string;
   onSearchChange: (next: string) => void;
-  categories: Category[];
-  selectedCategory: string;
-  onSelectCategory: (slug: string) => void;
+  onOpenMobileNav: () => void;
 }
 
 export function Header({
   site,
-  itemCount,
   searchQuery,
   onSearchChange,
-  categories,
-  selectedCategory,
-  onSelectCategory,
+  onOpenMobileNav,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/80 backdrop-blur">
-      <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h1 className="break-words text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">
-              {site.title}
-            </h1>
-            <span className="text-sm text-zinc-500">
-              {itemCount} {itemCount === 1 ? "item" : "videos"}
-            </span>
-          </div>
+    <header className="flex h-12 shrink-0 items-center justify-between gap-3 bg-[#f4f6f9] px-3 sm:px-4">
+      <div className="flex min-w-0 items-center gap-2.5 md:w-[212px]">
+        <button
+          type="button"
+          onClick={onOpenMobileNav}
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] text-[#5d5f60] hover:bg-[#ebedee] hover:text-[#131416] focus:outline-none md:hidden"
+          aria-label="Open module navigation"
+        >
+          <Menu className="h-4 w-4" />
+        </button>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <SearchBar value={searchQuery} onChange={onSearchChange} />
-          </div>
-
-          {site.description && (
-            <p className="break-words text-sm text-zinc-500">{site.description}</p>
-          )}
-
-          <CategoryFilter
-            categories={categories}
-            selected={selectedCategory}
-            onSelect={onSelectCategory}
-          />
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] bg-[#131416] text-[11px] font-semibold tracking-tight text-white">
+          EM
         </div>
+        <span className="truncate text-[14px] font-medium tracking-tight text-[#131416]">
+          {site.title}
+        </span>
+      </div>
+
+      <div className="hidden flex-1 justify-center sm:flex">
+        <SearchBar value={searchQuery} onChange={onSearchChange} />
+      </div>
+
+      <div className="flex shrink-0 items-center justify-end gap-2 md:w-[140px]">
+        <Link
+          to="/admin"
+          className="rounded-[6px] px-2.5 py-1 text-[13px] font-medium text-[#5d5f60] transition-colors hover:bg-[#ebedee] hover:text-[#131416]"
+        >
+          Admin
+        </Link>
       </div>
     </header>
   );

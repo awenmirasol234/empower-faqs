@@ -217,7 +217,7 @@ export function AdminDashboardPage() {
 
   if (checking) {
     return (
-      <div className="grid min-h-screen place-items-center bg-zinc-50 p-6 text-sm text-zinc-500">
+      <div className="grid min-h-[100dvh] place-items-center bg-[#f4f6f9] p-6 text-[13px] text-[#5d5f60]">
         Checking authentication...
       </div>
     );
@@ -230,64 +230,65 @@ export function AdminDashboardPage() {
   const categories = doc?.categories ?? [];
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50">
-      <header className="sticky top-0 z-20 border-b border-zinc-200 bg-white/80 backdrop-blur">
-        <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <h1 className="text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">
-                  Admin Dashboard
-                </h1>
-                <span className="rounded-full bg-accentBlue px-2.5 py-1 text-xs font-medium text-white">
-                  {stats.totalCards} cards
-                </span>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleExportBackup}
-                  disabled={!doc}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 min-h-[44px]"
-                >
-                  <Download className="h-4 w-4" aria-hidden="true" />
-                  Export JSON
-                </button>
-                <a
-                  href="/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 min-h-[44px]"
-                >
-                  View Public Site
-                </a>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await logout();
-                    navigate("/admin/login", { replace: true });
-                  }}
-                  className="inline-flex items-center justify-center rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 min-h-[44px]"
-                >
-                  Log Out
-                </button>
-              </div>
-            </div>
-
-            <p className="text-sm text-zinc-500 break-words">
-              Manage videos and FAQ cards — create, edit, reorder, save drafts, and
-              publish. Only Published cards appear on the public site.
-            </p>
+    <div className="flex min-h-[100dvh] flex-col bg-[#f4f6f9]">
+      <header className="flex h-12 shrink-0 items-center justify-between gap-3 bg-[#f4f6f9] px-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] bg-[#131416] text-[11px] font-semibold text-white">
+            EM
           </div>
+          <span className="truncate text-[14px] font-medium tracking-tight text-[#131416]">
+            Admin CMS
+          </span>
+          <span className="num rounded-[5px] border border-[#e8eaec] bg-[#ffffff] px-2 py-0.5 text-[11px] text-[#5d5f60]">
+            {stats.totalCards} cards
+          </span>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={handleExportBackup}
+            disabled={!doc}
+            className="inline-flex h-8 items-center gap-1.5 rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-2.5 text-[12px] font-medium text-[#131416] hover:border-[#cdced1] hover:bg-[#ebedee] disabled:opacity-50"
+          >
+            <Download className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="hidden sm:inline">Export JSON</span>
+          </button>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-8 items-center justify-center rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-2.5 text-[12px] font-medium text-[#131416] hover:border-[#cdced1] hover:bg-[#ebedee]"
+          >
+            View Library
+          </a>
+          <button
+            type="button"
+            onClick={async () => {
+              await logout();
+              navigate("/admin/login", { replace: true });
+            }}
+            className="inline-flex h-8 items-center justify-center rounded-[6px] border border-[#ffedea] bg-[#ffedea] px-2.5 text-[12px] font-medium text-[#831c1e] hover:bg-[#ffdcd7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c4242a]"
+          >
+            Log out
+          </button>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 space-y-6">
+      <main className="mx-0 flex w-full flex-1 flex-col gap-5 rounded-t-[12px] border border-[#e8eaec] bg-[#ffffff] p-4 sm:p-6 md:mx-2 md:mb-2 md:w-auto md:rounded-[16px]">
+        <div className="flex flex-col gap-1 border-b border-[#e8eaec] pb-4">
+          <h1 className="text-[20px] font-medium tracking-tight text-[#131416]">
+            Content Library
+          </h1>
+          <p className="break-words text-[13px] text-[#5d5f60]">
+            Create, edit, reorder, save drafts, and publish video walkthroughs and FAQs. Only Published cards appear on the public library.
+          </p>
+        </div>
+
         <StatsCards stats={stats} />
 
         {error && (
-          <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 break-words">
+          <div className="break-words rounded-[8px] border border-[#ffedea] bg-[#ffedea] px-3.5 py-2.5 text-[13px] text-[#831c1e]">
             {error}
           </div>
         )}
@@ -301,9 +302,9 @@ export function AdminDashboardPage() {
                 setFormInitialType("video");
                 setFormOpen(true);
               }}
-              className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-lg bg-accentBlue px-5 py-2.5 text-sm font-medium text-white hover:bg-[#244ac2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue min-h-[44px]"
+              className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-[6px] bg-[#131416] px-3.5 text-[13px] font-medium text-white hover:bg-[#2a2c30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] sm:flex-none"
             >
-              <span className="text-lg leading-none">+</span> Add YouTube Video
+              <span>+</span> Add YouTube Video
             </button>
             <button
               type="button"
@@ -312,14 +313,14 @@ export function AdminDashboardPage() {
                 setFormInitialType("faq");
                 setFormOpen(true);
               }}
-              className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-lg border border-accentBlue bg-white px-5 py-2.5 text-sm font-medium text-accentBlue hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue min-h-[44px]"
+              className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-3.5 text-[13px] font-medium text-[#131416] hover:border-[#cdced1] hover:bg-[#f4f6f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] sm:flex-none"
             >
-              <span className="text-lg leading-none">+</span> Add FAQ Card
+              <span>+</span> Add FAQ Card
             </button>
             <button
               type="button"
               onClick={() => setCategoriesModalOpen(true)}
-              className="inline-flex flex-1 sm:flex-none items-center justify-center rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue min-h-[44px]"
+              className="inline-flex h-8 flex-1 items-center justify-center rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-3.5 text-[13px] font-medium text-[#131416] hover:border-[#cdced1] hover:bg-[#f4f6f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] sm:flex-none"
             >
               Manage Categories
             </button>
@@ -330,7 +331,7 @@ export function AdminDashboardPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search cards..."
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-accentBlue focus:ring-2 focus:ring-accentBlue/20 min-h-[44px] sm:w-[220px]"
+              className="h-8 w-full rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-3 text-[13px] text-[#131416] placeholder:text-[#5d5f60] focus:border-[#cdced1] focus:outline-none sm:w-[210px]"
             />
 
             <div className="relative w-full sm:w-auto">
@@ -338,7 +339,7 @@ export function AdminDashboardPage() {
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 aria-label="Filter by category"
-                className="w-full appearance-none rounded-lg border border-zinc-300 bg-white px-3 py-2.5 pr-12 text-sm leading-5 outline-none focus:border-accentBlue focus:ring-2 focus:ring-accentBlue/20 min-h-[44px] sm:w-[190px]"
+                className="h-8 w-full appearance-none rounded-[6px] border border-[#e8eaec] bg-[#ffffff] pl-3 pr-8 text-[13px] text-[#131416] focus:border-[#cdced1] focus:outline-none sm:w-[190px]"
               >
                 <option value="">All Categories</option>
                 {categories.map((cat) => (
@@ -347,8 +348,8 @@ export function AdminDashboardPage() {
                   </option>
                 ))}
               </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500">
-                <ChevronDown className="h-5 w-5" aria-hidden="true" />
+              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[#5d5f60]">
+                <ChevronDown className="h-4 w-4" aria-hidden="true" />
               </span>
             </div>
 
@@ -357,22 +358,22 @@ export function AdminDashboardPage() {
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 aria-label="Filter by status"
-                className="w-full appearance-none rounded-lg border border-zinc-300 bg-white px-3 py-2.5 pr-12 text-sm leading-5 outline-none focus:border-accentBlue focus:ring-2 focus:ring-accentBlue/20 min-h-[44px] sm:w-[160px]"
+                className="h-8 w-full appearance-none rounded-[6px] border border-[#e8eaec] bg-[#ffffff] pl-3 pr-8 text-[13px] text-[#131416] focus:border-[#cdced1] focus:outline-none sm:w-[150px]"
               >
                 <option value="">All Statuses</option>
                 <option value="published">Published</option>
                 <option value="draft">Draft</option>
                 <option value="hidden">Hidden</option>
               </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500">
-                <ChevronDown className="h-5 w-5" aria-hidden="true" />
+              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[#5d5f60]">
+                <ChevronDown className="h-4 w-4" aria-hidden="true" />
               </span>
             </div>
           </div>
         </div>
 
         {loading ? (
-          <div className="grid place-items-center rounded-xl border border-zinc-200 bg-white px-6 py-12 text-sm text-zinc-500">
+          <div className="grid place-items-center rounded-[10px] border border-[#e8eaec] bg-[#f4f6f8] px-6 py-12 text-[13px] text-[#5d5f60]">
             Loading content...
           </div>
         ) : (

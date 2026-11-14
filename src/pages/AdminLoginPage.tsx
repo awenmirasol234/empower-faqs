@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAdmin } from "../services/contentService.ts";
@@ -30,33 +31,40 @@ export function AdminLoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50">
-      <header className="border-b border-zinc-200 bg-white">
-        <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6">
-          <Link
-            to="/"
-            className="text-sm font-medium text-accentBlue hover:underline"
-          >
-            &larr; Back to Home
-          </Link>
-        </div>
+    <div className="flex min-h-[100dvh] flex-col bg-[#f4f6f9]">
+      <header className="flex h-12 shrink-0 items-center justify-between bg-[#f4f6f9] px-4 sm:px-6">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 rounded-[6px] px-2 py-1 text-[13px] font-medium text-[#5d5f60] hover:bg-[#ebedee] hover:text-[#131416]"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+          Back to library
+        </Link>
       </header>
 
       <main className="mx-auto flex w-full max-w-md flex-1 items-center px-4 py-10 sm:px-6">
         <form
           onSubmit={handleSubmit}
-          className="w-full rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"
+          className="w-full rounded-[16px] border border-[#e8eaec] bg-[#ffffff] p-6 sm:p-8"
         >
-          <h1 className="text-xl font-bold text-zinc-900">Admin Login</h1>
-          <p className="mt-1 text-sm text-zinc-500">
-            Enter the admin password to manage FAQ and video cards.
+          <div className="mb-5 flex items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-[#131416] text-[11px] font-semibold text-white">
+              EM
+            </div>
+            <h1 className="text-[18px] font-semibold tracking-tight text-[#131416]">
+              Admin Sign In
+            </h1>
+          </div>
+
+          <p className="text-[13px] leading-[1.45] text-[#5d5f60]">
+            Enter the admin password to manage video guides, FAQs, and module categories.
           </p>
 
           <label
-            className="mt-6 block text-sm font-medium text-zinc-700"
+            className="mt-5 block text-[12px] font-medium text-[#131416]"
             htmlFor="admin-secret"
           >
-            Admin Password
+            Admin password
           </label>
           <input
             id="admin-secret"
@@ -64,12 +72,12 @@ export function AdminLoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter password"
-            className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-accentBlue focus:ring-2 focus:ring-accentBlue/20 min-h-[44px]"
+            className="mt-1.5 h-9 w-full rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-3 text-[13px] text-[#131416] placeholder:text-[#5d5f60] focus:border-[#cdced1] focus:outline-none"
             autoFocus
           />
 
           {error && (
-            <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 break-words">
+            <p className="mt-3 break-words rounded-[6px] border border-[#ffedea] bg-[#ffedea] px-3 py-2 text-[13px] text-[#831c1e]">
               {error}
             </p>
           )}
@@ -77,14 +85,13 @@ export function AdminLoginPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-accentBlue px-4 py-2.5 text-sm font-medium text-white hover:bg-[#244ac2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue disabled:opacity-50 min-h-[44px]"
+            className="mt-5 inline-flex h-9 w-full items-center justify-center rounded-[6px] bg-[#131416] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[#2a2c30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3] disabled:opacity-50"
           >
-            {submitting ? "Checking..." : "Log In"}
+            {submitting ? "Checking..." : "Sign In"}
           </button>
 
-          <p className="mt-4 text-center text-xs text-zinc-400">
-            Writes require an authenticated admin session. Public browsing needs no
-            login.
+          <p className="mt-4 text-center text-[12px] text-[#5d5f60]">
+            Writes require an authenticated admin session. Public browsing needs no login.
           </p>
         </form>
       </main>

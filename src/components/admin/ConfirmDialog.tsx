@@ -31,20 +31,21 @@ export function ConfirmDialog({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-[#131416]/50 p-4">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+        data-ui="modal"
+        className="w-full max-w-md rounded-[12px] border border-[#e8eaec] bg-[#ffffff] p-6"
       >
         <h3
           id="confirm-dialog-title"
-          className="text-lg font-semibold text-zinc-900 break-words"
+          className="break-words text-[16px] font-semibold text-[#131416]"
         >
           {title}
         </h3>
-        <p className="mt-2 text-sm text-zinc-600 break-words whitespace-pre-wrap">
+        <p className="mt-2 whitespace-pre-wrap break-words text-[13px] leading-[1.5] text-[#5d5f60]">
           {message}
         </p>
         <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -52,7 +53,7 @@ export function ConfirmDialog({
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="inline-flex items-center justify-center rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue min-h-[44px]"
+            className="inline-flex h-8 items-center justify-center rounded-[6px] border border-[#e8eaec] bg-[#ffffff] px-3.5 text-[13px] font-medium text-[#131416] hover:border-[#cdced1] hover:bg-[#f4f6f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5be3]"
           >
             Cancel
           </button>
@@ -60,7 +61,7 @@ export function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 disabled:opacity-50 min-h-[44px]"
+            className="inline-flex h-8 items-center justify-center rounded-[6px] bg-[#c4242a] px-3.5 text-[13px] font-medium text-white hover:bg-[#a61d22] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c4242a] disabled:opacity-50"
           >
             {loading ? "Deleting..." : confirmLabel}
           </button>

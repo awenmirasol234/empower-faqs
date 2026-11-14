@@ -138,20 +138,21 @@ export function CategoryManagerModal({
 
   return (
     <div
-      className="fixed inset-0 z-40 grid place-items-center bg-black/50 p-2 sm:p-4 overflow-y-auto"
+      className="fixed inset-0 z-40 grid place-items-center overflow-y-auto bg-[#131416]/50 p-2 sm:p-4"
       onClick={onClose}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="manage-categories-title"
-        className="my-4 w-full max-w-xl rounded-2xl bg-white shadow-xl"
+        data-ui="modal"
+        className="my-4 w-full max-w-xl rounded-[12px] border border-[#e8eaec] bg-[#ffffff]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-200 bg-white px-4 py-3 sm:px-6 rounded-t-2xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-[12px] border-b border-[#e8eaec] bg-[#f4f6f8] px-4 py-3 sm:px-6">
           <h2
             id="manage-categories-title"
-            className="text-base font-semibold text-zinc-900"
+            className="text-[15px] font-semibold text-[#131416]"
           >
             Manage Categories
           </h2>
