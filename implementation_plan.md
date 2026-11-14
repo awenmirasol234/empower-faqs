@@ -2,114 +2,238 @@
 
 ## 1. Project Overview
 
-Build a website that closely replicates the existing EMPOWER FAQ website:
+Build a website that closely replicates the existing EMPOWER FAQ website.
 
-- Reference: https://empower-faqs.vercel.app
-- Frontend build tool: Vite
-- Frontend framework: React
+Reference: https://empower-faqs.vercel.app
+
+### Technology Stack
+
+- Build tool: Vite
+- Frontend: React
 - Language: TypeScript
 - Styling: Tailwind CSS
-- Admin authentication: Supabase Auth
+- UI components: shadcn/ui (where useful)
+- Icons: Lucide React
+- Routing: React Router
 - Backend: Vercel Serverless Functions
-- Persistent content storage: Vercel Blob using a JSON document
+- Authentication: Server-side admin password authentication
+- Database: Upstash Redis via Vercel Marketplace
 - Hosting: Vercel
-- Video platform: YouTube
 
-The public website should preserve the reference website's layout, visual style, content hierarchy, and interaction patterns as closely as practical. Add a separate, protected admin area for managing FAQ and video cards.
+The public website must preserve the reference website's visual appearance, layout, content hierarchy, and interaction patterns as closely as practical.
 
-## 2. Goals
+Add a separate, protected admin dashboard for managing FAQ and video cards.
 
-1. Replicate the reference website before introducing new visual patterns.
-2. Keep the public experience responsive across desktop, tablet, and mobile.
-3. Allow authorized administrators to create, edit, delete, reorder, draft, and publish content.
-4. Allow administrators to add video cards using YouTube URLs.
-5. Generate YouTube thumbnail URLs automatically from valid video URLs.
-6. Store content persistently as JSON in Vercel Blob.
-7. Display published content on the public website from the stored JSON data.
-8. Keep privileged credentials and content-management operations on the server.
+## 2. Project Goals
+
+1. Replicate the reference website as closely as possible.
+2. Maintain responsive desktop, tablet, and mobile layouts.
+3. Provide a protected admin dashboard.
+4. Allow administrators to create, edit, delete, reorder, draft, and publish content.
+5. Support YouTube video cards with automatically generated thumbnails.
+6. Store content persistently in Upstash Redis.
+7. Display published content dynamically on the public website.
+8. Keep credentials and administrative operations server-side.
 
 ## 3. Reference Website Inspection
 
-Before implementation, inspect the live reference website in a browser.
+Before implementation, inspect the reference website.
 
-Document and reproduce the following where present:
+Reference:
+https://empower-faqs.vercel.app
 
-- Page structure and section order
-- Header, navigation, and footer
-- Typography, font weights, and text hierarchy
-- Colors, backgrounds, borders, shadows, and spacing
-- Card dimensions, alignment, and responsive behavior
-- FAQ categories and expandable/collapsible behavior
-- Video card layout and thumbnail treatment
-- Buttons, links, hover states, and transitions
-- Mobile navigation and small-screen layouts
-- Loading, empty, and other visible states
+Analyze and document:
 
-Capture screenshots at representative desktop and mobile viewport sizes. Use these as visual references during implementation.
+- Page structure and section order.
+- Header, navigation, and footer.
+- Typography and font hierarchy.
+- Colors, backgrounds, borders, and shadows.
+- Spacing, sizing, and alignment.
+- Card layouts and visual hierarchy.
+- FAQ categories and expandable sections.
+- Video cards and thumbnail presentation.
+- Buttons, links, hover effects, and animations.
+- Responsive behavior.
+- Mobile navigation.
+- Loading and empty states.
 
-Do not assume the page structure from its URL or replace the existing design with a generic FAQ template. If an interaction or visual detail cannot be determined, inspect the live site further before making a decision.
+Capture desktop and mobile screenshots for visual comparison.
 
-## 4. Recommended Technology Stack
+Do not redesign the website or replace its existing design with a generic FAQ template.
 
-| Area | Technology | Responsibility |
-|---|---|---|
-| Build tool | Vite | Development server and production build |
-| UI | React | Page and component rendering |
-| Language | TypeScript | Type-safe application code |
-| Styling | Tailwind CSS | Responsive styling |
-| UI primitives | shadcn/ui, only where useful | Accessible dialogs, forms, and controls |
-| Icons | Lucide React | Interface icons |
-| Routing | React Router | Public and admin routes |
-| Authentication | Supabase Auth | Admin sign-in and session management |
-| Server API | Vercel Functions | Protected content operations |
-| Persistent storage | Vercel Blob | Store and retrieve the JSON content document |
-| Hosting | Vercel | Deploy the frontend and API functions |
+## 4. Public Website
 
-Keep dependencies limited to what the application actually needs. Do not add a separate database unless the JSON storage approach becomes unsuitable.
+Recreate the reference website using reusable React components.
 
-## 5. Application Architecture
+Requirements:
 
-Use a clear separation between the public frontend, admin frontend, and server-side API.
+- Preserve the original visual identity.
+- Reproduce the existing page structure.
+- Match typography, colors, spacing, and card dimensions.
+- Reproduce existing interactions.
+- Support responsive layouts.
+- Load content dynamically from the backend API.
+- Display published content only.
+- Provide loading, empty, and error states.
 
-### Public frontend
+Do not hardcode production FAQ or video content inside React components.
 
-- Load published content from the public content API.
-- Render FAQ categories and cards using reusable components.
-- Render video cards using their saved YouTube thumbnail and URL.
-- Handle loading, empty, and request-error states.
-- Never expose draft or unpublished content.
+## 5. Admin CMS
 
-### Admin frontend
+Create a separate protected admin dashboard.
 
-- Require an authenticated administrator session.
-- Provide a dashboard for managing FAQ and video content.
-- Use forms with validation and clear save/publish feedback.
-- Confirm destructive actions such as deletion.
-- Refresh the displayed content after successful changes.
+### Authentication
 
-### Server-side API
+- Provide an admin login page.
+- Use a server-side configured admin password hash.
+- Never store the plaintext admin password in source code.
+- Verify credentials on the server.
+- Use cryptographically secure session identifiers.
+- Use signed or securely validated HTTP-only session cookies.
+- Set Secure cookies in production.
+- Apply an appropriate SameSite policy.
+- Store sessions in Upstash Redis with expiration.
+- Support logout and session revocation.
+- Rate-limit login attempts.
+- Do not allow public admin registration.
 
-- Verify the administrator's Supabase access token on every protected request.
-- Validate request bodies and content fields.
-- Read and write the JSON document in Vercel Blob.
-- Keep the Blob token and Supabase server credentials in server-only environment variables.
-- Return appropriate HTTP status codes and safe error messages.
-- Never trust a client-side admin flag as authorization.
+Every protected API request must verify the admin session on the server.
 
-## 6. Content Model
+### Dashboard
 
-Use a versioned JSON document so its structure can evolve safely.
+Display useful content statistics:
+
+- Total cards.
+- Published cards.
+- Draft cards.
+- Total categories.
+
+### Content Management
+
+Administrators must be able to:
+
+- Create categories.
+- Edit categories.
+- Delete categories.
+- Create FAQ cards.
+- Create video cards.
+- Edit existing cards.
+- Delete cards.
+- Save drafts.
+- Publish and unpublish content.
+- Reorder categories.
+- Reorder cards.
+- Preview content before publishing.
+
+Require confirmation before destructive operations.
+
+### Video Card Fields
+
+- Title.
+- Description.
+- YouTube URL.
+- Automatically generated YouTube video ID.
+- Automatically generated thumbnail.
+- Category.
+- Display order.
+- Publication status.
+
+### FAQ Card Fields
+
+Inspect the reference website and determine the appropriate FAQ fields.
+
+At minimum, support a question/title and answer when the reference uses question-and-answer content.
+
+## 6. YouTube Integration
+
+Support these YouTube URL formats:
+
+- https://www.youtube.com/watch?v=VIDEO_ID
+- https://youtu.be/VIDEO_ID
+- https://www.youtube.com/shorts/VIDEO_ID
+- https://www.youtube.com/embed/VIDEO_ID
+
+Extract and validate the video ID.
+
+Generate the thumbnail automatically:
+
+https://img.youtube.com/vi/VIDEO_ID/hqdefault.jpg
+
+Requirements:
+
+- Validate URLs before saving.
+- Display a thumbnail preview in the admin form.
+- Save the video URL and video ID.
+- Display thumbnails on public cards.
+- Allow users to play videos through an embedded player or the interaction used by the reference website.
+- Provide a fallback when a thumbnail cannot load.
+
+## 7. Backend and API
+
+Use Vercel Serverless Functions.
+
+The backend is responsible for:
+
+- Admin authentication.
+- Session validation.
+- Authorization.
+- Content validation.
+- Redis operations.
+- Public content retrieval.
+- Error handling.
+
+### Suggested API Endpoints
+
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| GET | /api/content | Public | Retrieve published content |
+| GET | /api/admin/content | Admin | Retrieve all content |
+| PUT | /api/admin/content | Admin | Save content |
+| GET | /api/admin/session | Authenticated | Verify admin session |
+| POST | /api/admin/login | Public | Authenticate administrator |
+| POST | /api/admin/logout | Authenticated | End admin session |
+
+Use appropriate HTTP status codes.
+
+Validate all incoming data on the server.
+
+Never trust client-side authorization checks.
+
+## 8. Database — Upstash Redis
+
+Use Upstash Redis through the Vercel Marketplace.
+
+Do not use:
+
+- Supabase Database.
+- Supabase Auth.
+- Vercel Blob.
+- Local JSON files as persistent storage.
+- The Vercel deployment filesystem for persistent data.
+
+Vercel KV is discontinued for new projects. Use Upstash Redis instead.
+
+### Data Organization
+
+Store content using predictable Redis keys.
 
 Example:
 
-```json
+empower:content:v1
+empower:category:{categoryId}
+empower:card:{cardId}
+empower:admin:session:{sessionId}
+
+For the initial implementation, use a versioned JSON document stored in Redis.
+
+Example content structure:
+
 {
   "version": 1,
   "categories": [
     {
       "id": "category-001",
       "title": "Getting Started",
-      "description": "",
       "order": 1,
       "cards": [
         {
@@ -129,187 +253,52 @@ Example:
     }
   ]
 }
-```
 
-The example is illustrative. Confirm the final content types and fields after inspecting the reference website.
+This is an example. Finalize the content structure after inspecting the reference website.
 
-### Data rules
+### Redis Requirements
 
-- Use stable unique IDs for categories and cards.
-- Use an explicit content type, such as `faq` or `video`, if both types share the same card collection.
-- Use `draft` and `published` as the initial publication states.
-- Keep ordering explicit with numeric `order` fields.
-- Store timestamps in ISO 8601 format.
-- Validate the JSON document before saving it.
-- Do not store derived values when they can be safely generated, unless storing them improves reliability or avoids repeated work.
+- Use the official @upstash/redis SDK.
+- Store persistent content as JSON.
+- Read and write Redis data through server-side functions.
+- Validate content before saving.
+- Handle missing or malformed data safely.
+- Avoid accidental overwrites during concurrent updates.
+- Do not set expiration on permanent content.
+- Use TTL for temporary admin sessions.
+- Keep Redis credentials private.
+- Provide a way to export or back up content.
 
-## 7. YouTube URL and Thumbnail Handling
+Keep Redis access behind a server-side service so the storage implementation can be replaced later without rewriting the frontend.
 
-The admin form must accept supported YouTube URL formats, including:
+## 9. Environment Variables
 
-- `https://www.youtube.com/watch?v=VIDEO_ID`
-- `https://youtu.be/VIDEO_ID`
-- `https://www.youtube.com/shorts/VIDEO_ID`
-- `https://www.youtube.com/embed/VIDEO_ID`
+Configure these variables in Vercel:
 
-Extract and validate the video ID. Reject unsupported or malformed URLs with a clear validation message.
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+ADMIN_PASSWORD_HASH=
+SESSION_SECRET=
 
-Generate the thumbnail URL from the validated video ID:
+Rules:
 
-```text
-https://img.youtube.com/vi/VIDEO_ID/hqdefault.jpg
-```
+- Never commit real credentials.
+- Never expose Redis credentials to browser code.
+- Never prefix privileged secrets with VITE_.
+- Keep server-only secrets in Vercel environment settings.
+- Use separate development and production credentials where appropriate.
 
-The admin should see a thumbnail preview before saving.
+Create an .env.example containing placeholder values only.
 
-On the public website:
+## 10. Suggested Project Structure
 
-- Display the saved thumbnail.
-- Make the card open or play the corresponding YouTube video.
-- Prefer an accessible embedded-player dialog or the interaction pattern used by the reference website.
-- Provide a fallback if the thumbnail cannot load.
-- Do not assume every video has every YouTube thumbnail resolution available.
-
-## 8. Admin CMS Requirements
-
-Create a protected admin area separate from the public website.
-
-### Authentication
-
-- Provide an admin login page.
-- Use Supabase Auth for sign-in and session handling.
-- Restrict admin routes to authenticated users.
-- Verify the user's identity and admin authorization on the server for every write operation.
-- Do not provide public admin registration unless explicitly required.
-- Sign out securely and handle expired sessions.
-
-### Dashboard
-
-Show a useful overview, such as:
-
-- Total cards
-- Published cards
-- Draft cards
-- Total categories
-
-Only include metrics that can be derived reliably from the stored content.
-
-### Content management
-
-Administrators must be able to:
-
-- Create a category.
-- Edit a category.
-- Delete a category, with confirmation and a clear explanation of what happens to its cards.
-- Create FAQ cards.
-- Create video cards.
-- Edit existing cards.
-- Delete cards, with confirmation.
-- Save cards as drafts.
-- Publish and unpublish cards.
-- Reorder categories and cards.
-- Preview content before publishing.
-
-### Video card fields
-
-- Title
-- Description
-- YouTube URL
-- Automatically generated YouTube video ID
-- Automatically generated thumbnail preview
-- Category
-- Display order
-- Publication status
-
-### FAQ card fields
-
-Inspect the reference website to determine the appropriate FAQ fields and presentation. At minimum, support a question/title and answer if the reference uses question-and-answer content.
-
-### CMS behavior
-
-- Validate required fields before submission.
-- Prevent accidental duplicate submissions.
-- Show loading and saving states.
-- Show clear success and error feedback.
-- Preserve unsaved form data when a request fails.
-- Update the public website after a successful publish operation.
-- Do not expose draft content through public endpoints.
-
-## 9. JSON Storage on Vercel
-
-Do not use the deployed application's local filesystem as persistent storage. Vercel Functions have a read-only deployment filesystem; temporary storage is not a durable content store.
-
-Use Vercel Blob to store a JSON object, for example:
-
-```text
-empower-content.json
-```
-
-### Storage operations
-
-Implement server-side functions to:
-
-1. Read the current JSON document.
-2. Validate and parse the document.
-3. Apply the requested content change.
-4. Validate the complete updated document.
-5. Write the updated JSON document to Vercel Blob.
-6. Return a safe response to the client.
-
-Use the Vercel Blob SDK and its current documented APIs. Confirm the correct read, write, overwrite, and access settings during implementation.
-
-### Concurrency and data integrity
-
-A single JSON document is suitable for a small CMS with modest write volume, but simultaneous admin updates can overwrite one another if writes are not coordinated.
-
-- Avoid silently losing concurrent changes.
-- Use a server-side update strategy that checks the current document version or equivalent storage state before writing.
-- If reliable conditional writes or concurrency control are not available with the selected Blob API, document the limitation and recommend a database before production use with multiple simultaneous editors.
-- Validate the full document before every write.
-- Keep a recoverable backup or version history where practical.
-
-### Public access
-
-Choose the least-privileged storage access pattern that supports the application:
-
-- Keep the source JSON private if practical.
-- Expose only published content through a public read API.
-- Never expose draft content or private metadata.
-- Do not return storage credentials or internal storage details to the browser.
-
-## 10. API Design
-
-Use Vercel Serverless Functions for server-side content access.
-
-Suggested API responsibilities:
-
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| GET | `/api/content` | Public | Return published content only |
-| GET | `/api/admin/content` | Admin | Return all content, including drafts |
-| PUT | `/api/admin/content` | Admin | Validate and save the content document |
-| GET | `/api/admin/session` | Authenticated | Verify the current admin session |
-
-The exact endpoint structure may be adjusted to fit Vercel's routing conventions and the final application architecture.
-
-For each protected request:
-
-- Read the bearer token from the request.
-- Verify it with Supabase Auth using a server-side trusted method.
-- Confirm the user is authorized as an administrator.
-- Reject missing, invalid, expired, or unauthorized sessions.
-- Validate the submitted data on the server, even if the frontend already validates it.
-
-Use appropriate status codes, including `400`, `401`, `403`, `404`, `409`, and `500` where applicable.
-
-## 11. Suggested Project Structure
-
-```text
 empower-faqs/
 ├── api/
 │   ├── content.ts
 │   └── admin/
 │       ├── content.ts
+│       ├── login.ts
+│       ├── logout.ts
 │       └── session.ts
 ├── public/
 │   └── assets/
@@ -336,7 +325,7 @@ empower-faqs/
 │   ├── types/
 │   │   └── content.ts
 │   ├── lib/
-│   │   └── supabase.ts
+│   │   └── redis.ts
 │   ├── hooks/
 │   ├── styles/
 │   └── main.tsx
@@ -347,212 +336,193 @@ empower-faqs/
 ├── tsconfig.json
 ├── vercel.json
 └── README.md
-```
 
-Adjust the structure to the actual Vercel Functions routing setup. Avoid creating empty folders or unnecessary abstraction layers.
+Adjust the structure to the actual Vercel Functions routing setup.
 
-## 12. Environment Variables
+Avoid unnecessary folders and abstractions.
 
-Create `.env.example` with variable names and placeholder values only.
-
-Expected server-side variables:
-
-```env
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-BLOB_READ_WRITE_TOKEN=
-```
-
-Expected client-side variables, if required by the selected Supabase client setup:
-
-```env
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-```
-
-Rules:
-
-- Never prefix privileged secrets with `VITE_`.
-- Never commit real credentials.
-- Configure production secrets in Vercel project settings.
-- Use separate development and production credentials where appropriate.
-- Do not use the service role key in browser code.
-
-## 13. Responsive Design and Accessibility
+## 11. Responsive Design and Accessibility
 
 - Match the reference website's responsive behavior.
-- Test desktop, tablet, and mobile layouts.
-- Avoid horizontal overflow.
-- Keep cards and text readable at narrow widths.
-- Use semantic HTML elements.
-- Ensure interactive elements are keyboard accessible.
+- Support desktop, tablet, and mobile.
+- Prevent horizontal overflow.
+- Keep cards and text readable.
+- Use semantic HTML.
+- Support keyboard navigation.
 - Provide visible focus states.
-- Use accessible labels for forms and icon-only buttons.
-- Ensure dialogs can be closed with the keyboard.
-- Use appropriate alternative text for meaningful images.
+- Use accessible form labels.
+- Ensure dialogs are keyboard accessible.
 - Respect reduced-motion preferences.
 
-## 14. Testing and Verification
+## 12. Testing and Verification
 
-### Reference replication
+### Website
 
-- Compare implementation screenshots with the reference website.
-- Verify page structure, typography, spacing, colors, and card dimensions.
-- Test navigation, expandable sections, and video interactions.
-- Check responsive behavior at representative viewport sizes.
+- Compare screenshots against the reference.
+- Verify layout and typography.
+- Verify card sizes and spacing.
+- Test navigation and FAQ interactions.
+- Test video playback.
+- Test mobile responsiveness.
 
 ### CMS
 
-- Sign in with an authorized admin.
-- Reject unauthenticated and unauthorized write requests.
-- Create, edit, delete, reorder, draft, and publish content.
+- Verify admin login.
+- Reject unauthorized API requests.
+- Test create, edit, delete, reorder, draft, and publish.
 - Verify form validation.
-- Verify that failed saves do not discard unsaved changes.
-- Verify that public users cannot retrieve drafts.
+- Verify error and success states.
+- Confirm drafts are not publicly accessible.
 
 ### YouTube
 
-- Test standard watch URLs.
+- Test standard URLs.
 - Test shortened URLs.
 - Test Shorts URLs.
 - Test embed URLs.
 - Reject invalid URLs.
-- Verify thumbnail previews and video playback.
+- Verify thumbnail previews.
 
-### Storage
+### Redis
 
-- Create content and verify it persists after a page reload.
-- Verify it remains available after a new deployment.
-- Verify malformed JSON cannot replace valid content.
-- Test concurrent updates or document the remaining limitation.
-- Verify storage credentials are never exposed to the browser.
+- Verify content persists after page reload.
+- Verify content persists after redeployment.
+- Verify malformed data cannot overwrite valid content.
+- Test concurrent updates.
+- Verify Redis credentials are not exposed.
 
 ### Production
 
-- Run linting and TypeScript checks.
-- Run the production build.
-- Test the deployed public website.
-- Test the deployed admin workflow.
-- Review Vercel function logs for errors.
-- Confirm environment variables are configured correctly.
+- Run TypeScript checks.
+- Run linting.
+- Run production build.
+- Test deployed API endpoints.
+- Test the public website.
+- Test admin operations.
+- Review Vercel function logs.
 
-## 15. Implementation Phases
+## 13. Implementation Phases
 
-### Phase 1 — Inspect and document
+### Phase 1 — Reference Inspection
 
-- Inspect the reference website.
-- Record its page structure and visual patterns.
-- Test its interactive behavior.
+- Inspect the live reference website.
+- Document its visual patterns.
 - Capture desktop and mobile screenshots.
-- Identify the content types and fields required.
+- Identify content types and interactions.
 
-**Deliverable:** Reference UI notes and implementation checklist.
+Deliverable: Reference inspection notes.
 
-### Phase 2 — Project foundation
+### Phase 2 — Project Foundation
 
-- Inspect the existing repository before changing files.
+- Inspect the existing repository.
 - Configure Vite, React, and TypeScript.
-- Configure Tailwind CSS and routing.
-- Add only necessary dependencies.
-- Establish the initial component and feature structure.
+- Configure Tailwind CSS.
+- Configure routing.
+- Install only required dependencies.
 
-**Deliverable:** Running project foundation.
+Deliverable: Working project foundation.
 
-### Phase 3 — Public website replication
+### Phase 3 — Public Website
 
-- Build the page layout.
-- Implement reusable FAQ and video components.
-- Match the reference styling and interactions.
+- Recreate the reference layout.
+- Implement reusable components.
+- Reproduce FAQ and video interactions.
 - Implement responsive behavior.
-- Use temporary local fixture data only until the API is ready.
 
-**Deliverable:** Public website matching the reference as closely as practical.
+Deliverable: Replicated public website.
 
-### Phase 4 — Authentication and admin access
+### Phase 4 — Admin Authentication
 
-- Configure Supabase Auth.
-- Build the admin login page.
-- Protect admin routes.
-- Implement server-side admin authorization.
+- Implement admin login.
+- Verify password on the server.
+- Implement secure session cookies.
+- Store sessions in Redis.
+- Protect admin routes and APIs.
 
-**Deliverable:** Secure admin access.
+Deliverable: Protected admin access.
 
-### Phase 5 — CMS implementation
+### Phase 5 — CMS
 
 - Build the admin dashboard.
 - Implement category management.
-- Implement FAQ and video card forms.
-- Implement YouTube URL validation and thumbnail generation.
-- Implement draft, publish, delete, and reorder operations.
+- Implement FAQ management.
+- Implement video card management.
+- Implement YouTube thumbnail generation.
+- Implement draft and publish workflows.
 
-**Deliverable:** Functional content management interface.
+Deliverable: Functional CMS.
 
-### Phase 6 — Persistent JSON storage
+### Phase 6 — Redis Integration
 
-- Configure Vercel Blob.
-- Implement server-side JSON read and write operations.
-- Add schema validation and safe error handling.
+- Provision Upstash Redis through Vercel Marketplace.
+- Configure environment variables.
+- Implement content read/write operations.
+- Add validation and error handling.
 - Address concurrent update risks.
-- Connect the admin CMS to persistent storage.
 
-**Deliverable:** Persistent JSON-backed CMS.
+Deliverable: Persistent Redis-backed content.
 
-### Phase 7 — Public content integration
+### Phase 7 — Integration
 
-- Connect the public website to the content API.
-- Display published content only.
-- Add loading, empty, and error states.
-- Verify that admin updates appear on the public website.
+- Connect public pages to the content API.
+- Display published content.
+- Add loading and error states.
+- Verify admin changes appear publicly.
 
-**Deliverable:** Fully integrated public website and CMS.
+Deliverable: Integrated website and CMS.
 
-### Phase 8 — Testing and deployment
+### Phase 8 — Testing and Deployment
 
-- Run automated and manual tests.
-- Compare the website with the reference.
-- Verify authentication and API security.
-- Configure Vercel environment variables.
-- Deploy and verify production behavior.
+- Test the entire application.
+- Compare against the reference.
+- Verify API security.
+- Configure production environment variables.
+- Deploy to Vercel.
+- Verify production functionality.
 
-**Deliverable:** Production-ready Vercel deployment.
+Deliverable: Production-ready website.
 
-## 16. Acceptance Criteria
+## 14. Acceptance Criteria
 
-The project is complete when all of the following are true:
-
-- [ ] The public website closely matches the reference website.
-- [ ] Desktop, tablet, and mobile layouts work correctly.
-- [ ] Public content is loaded from the JSON-backed API.
-- [ ] Admin login works through Supabase Auth.
+- [ ] Public website closely matches the reference.
+- [ ] Desktop, tablet, and mobile layouts work.
+- [ ] Public content loads dynamically from Redis.
+- [ ] Admin login works.
 - [ ] Only authorized administrators can modify content.
-- [ ] Administrators can create, edit, delete, and reorder categories and cards.
+- [ ] Administrators can manage categories.
+- [ ] Administrators can manage FAQ cards.
+- [ ] Administrators can manage video cards.
 - [ ] Administrators can save drafts and publish content.
-- [ ] Administrators can create video cards using YouTube URLs.
-- [ ] YouTube thumbnails are generated and previewed automatically.
-- [ ] Published videos open or play correctly.
-- [ ] Content persists in Vercel Blob after redeployment.
-- [ ] Draft content is not visible through the public API.
-- [ ] Privileged credentials are not exposed to the browser.
-- [ ] TypeScript checks and production builds pass.
-- [ ] Important errors and unresolved limitations are documented.
+- [ ] YouTube thumbnails generate automatically.
+- [ ] YouTube videos play correctly.
+- [ ] Content persists after redeployment.
+- [ ] Drafts are not exposed publicly.
+- [ ] Credentials remain server-side.
+- [ ] TypeScript checks pass.
+- [ ] Production build succeeds.
 
-## 17. Scope Constraints
+## 15. Scope Constraints
 
-- Preserve the reference website's existing visual identity and behavior.
+- Preserve the reference website's visual identity.
 - Do not redesign unrelated sections.
 - Do not introduce unrelated features.
-- Do not hardcode production content in UI components.
-- Do not use the Vercel deployment filesystem as persistent storage.
-- Do not expose Supabase service role or Vercel Blob credentials.
-- Do not add a traditional database unless requirements or storage limitations justify it.
-- Prefer improving existing code over replacing working implementations.
-- Keep components and services focused on clear responsibilities.
-- Avoid unnecessary abstractions, dependencies, and configuration.
+- Do not hardcode production content in components.
+- Do not use local files as persistent storage.
+- Do not use Supabase.
+- Do not use Vercel Blob.
+- Do not expose Redis credentials.
+- Avoid unnecessary dependencies and abstractions.
+- Preserve existing functionality when modifying an existing project.
 - Update documentation when implementation details change.
 
-## 18. Technical Decision to Revisit
+## 16. Technical Considerations
 
-A single JSON document in Vercel Blob is a simple starting point for a small, low-write-volume CMS. It is not equivalent to a transactional database. If multiple administrators need to edit content concurrently, or if the content grows substantially, evaluate Supabase Postgres or another database for structured content storage.
+Upstash Redis is the selected key-value store.
 
-The initial implementation should use Vercel Blob JSON as requested, while keeping storage access behind a server-side service boundary so it can be replaced later without rewriting the public UI or admin forms.
+A versioned JSON document is suitable for a small CMS with modest write volume.
+
+However, a single JSON document can cause lost updates if multiple administrators edit simultaneously.
+
+Use an appropriate atomic update strategy or optimistic concurrency control. If reliable concurrency handling becomes difficult, evaluate separate Redis keys or a structured database.
+
+Keep storage operations isolated behind a server-side service so the frontend does not depend directly on Redis.
