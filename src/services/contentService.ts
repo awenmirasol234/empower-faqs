@@ -18,22 +18,38 @@ export interface AdminContentResponse extends ContentDocument {
   stats: ContentStats;
 }
 
+function isJsonResponse(response: Response): boolean {
+  const contentType = response.headers.get("content-type") ?? "";
+  return contentType.toLowerCase().includes("json");
+}
+
 async function parseJsonOrThrow<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let message = `Request failed (${response.status})`;
-    try {
-      const payload = (await response.json()) as { error?: string; message?: string };
-      if (typeof payload.error === "string" && payload.error) {
-        message = payload.error;
-      } else if (typeof payload.message === "string" && payload.message) {
-        message = payload.message;
+    if (isJsonResponse(response)) {
+      try {
+        const payload = (await response.json()) as {
+          error?: string;
+          message?: string;
+        };
+        if (typeof payload.error === "string" && payload.error) {
+          message = payload.error;
+        } else if (typeof payload.message === "string" && payload.message) {
+          message = payload.message;
+        }
+      } catch {
+        // ignore JSON parse failure
       }
-    } catch {
-      // ignore JSON parse failure
     }
     const err = new Error(message) as Error & { status?: number };
     err.status = response.status;
     throw err;
+  }
+
+  if (!isJsonResponse(response)) {
+    throw new Error(
+      "API returned non-JSON response. Please ensure the API server is running."
+    );
   }
 
   return (await response.json()) as T;
@@ -50,10 +66,12 @@ export async function recordCardView(
   const response = await fetch(`/api/videos/${cardId}/view`, {
     method: "POST",
   });
-  const payload = (await response.json().catch(() => ({}))) as {
-    views?: number;
-    error?: string;
-  };
+  const payload = isJsonResponse(response)
+    ? ((await response.json().catch(() => ({}))) as {
+        views?: number;
+        error?: string;
+      })
+    : {};
   return {
     status: response.status,
     views: payload.views,

@@ -30,8 +30,12 @@ const memoryStore = new Map<string, MemoryEntry>();
 let warnedAboutMemoryFallback = false;
 
 function getRedisClient(): Redis | null {
-  const url = process.env.UPSTASH_REDIS_REST_URL?.trim();
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
+  const url =
+    process.env.UPSTASH_REDIS_REST_URL?.trim() ||
+    process.env.KV_REST_API_URL?.trim();
+  const token =
+    process.env.UPSTASH_REDIS_REST_TOKEN?.trim() ||
+    process.env.KV_REST_API_TOKEN?.trim();
 
   if (url && token) {
     return new Redis({ url, token });
@@ -39,14 +43,14 @@ function getRedisClient(): Redis | null {
 
   if (process.env.NODE_ENV === "production") {
     throw new Error(
-      "UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must be configured in production."
+      "Upstash Redis credentials (UPSTASH_REDIS_REST_URL/TOKEN or KV_REST_API_URL/TOKEN) must be configured in production."
     );
   }
 
   if (!warnedAboutMemoryFallback) {
     warnedAboutMemoryFallback = true;
     console.warn(
-      "[redis] UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN not set. Using in-memory fallback for local development."
+      "[redis] Upstash Redis credentials not set. Using in-memory fallback for local development."
     );
   }
   return null;

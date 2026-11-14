@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { fetchPublicContent } from "../services/contentService.ts";
 import {
   generateSessionId,
   signSessionId,
@@ -112,5 +113,23 @@ describe("auth, validation, and storage", () => {
 
     const second = await incrementCardView(1, "203.0.113.5");
     expect(second?.incremented).toBe(false);
+  });
+
+  it("throws a clear error when API returns HTML instead of JSON", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn().mockResolvedValue(
+      new Response("<!doctype html><html></html>", {
+        status: 200,
+        headers: { "Content-Type": "text/html" },
+      })
+    ) as typeof fetch;
+
+    try {
+      await expect(fetchPublicContent()).rejects.toThrow(
+        "API returned non-JSON response. Please ensure the API server is running."
+      );
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 });

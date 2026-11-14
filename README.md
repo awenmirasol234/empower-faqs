@@ -42,7 +42,6 @@ A React + TypeScript + Tailwind CSS web application replicating the EMPOWER FAQ 
 
 Configure these in Vercel Project Settings:
 
-- `UPSTASH_REDIS_REST_URL` — From Vercel Marketplace -> Upstash Redis
-- `UPSTASH_REDIS_REST_TOKEN` — From Vercel Marketplace -> Upstash Redis
+- `UPSTASH_REDIS_REST_URL` & `UPSTASH_REDIS_REST_TOKEN` (or Vercel Marketplace's `KV_REST_API_URL` & `KV_REST_API_TOKEN`) — From Vercel Marketplace -> Upstash Redis
 - `ADMIN_PASSWORD_HASH` — Generated via `npm run hash-password -- "your-password"`
 - `SESSION_SECRET` — Random 32+ character secret for signing session cookies

@@ -29,6 +29,7 @@ export function HomePage() {
   const [cards, setCards] = useState<ContentCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [sortBy, setSortBy] = useState<SortKey>("all");
   const [rateLimitNotice, setRateLimitNotice] = useState<string | null>(null);
   const lastViewPingRef = useRef<Map<number, number>>(new Map());
@@ -59,7 +60,7 @@ export function HomePage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [retryCount]);
 
   useEffect(() => {
     if (!rateLimitNotice) return;
@@ -239,6 +240,13 @@ export function HomePage() {
               Unable to load content
             </p>
             <p className="mt-1 text-sm text-red-600">{loadError}</p>
+            <button
+              type="button"
+              onClick={() => setRetryCount((n) => n + 1)}
+              className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-full border border-red-200 bg-white px-5 py-2 text-sm font-medium text-red-700 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+            >
+              Retry
+            </button>
           </div>
         ) : loading ? (
           <div className="grid gap-4 sm:gap-5 grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))]">
